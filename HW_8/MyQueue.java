@@ -49,7 +49,9 @@ public class MyQueue<E> {
     }
 
     public E poll() {
-        return remove(0);
+        E firstElement = (E) elementQueue[0];
+        remove(0);
+        return firstElement;
     }
 
     @Override
