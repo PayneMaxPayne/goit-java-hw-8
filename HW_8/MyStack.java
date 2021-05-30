@@ -1,83 +1,57 @@
 package HW_8;
 
-import java.util.EmptyStackException;
+import java.util.Arrays;
 
 public class MyStack<E> {
+    private static final int DEFAULT_CAPACITY = 10;
+    private int size;
+    private E[] elements = (E[]) new Object[DEFAULT_CAPACITY];
 
-    static class MyNode<E> {
-        private E element;
-        private MyNode<E> next;
-
-        MyNode(E element) {
-            this.element = element;
-        }
-
-        public E getElement() {
-            return element;
-        }
-
-        public void setElement(E element) {
-            this.element = element;
-        }
-
-        public MyNode<E> getNext() {
-            return next;
-        }
-
-        public void setNext(MyNode<E> next) {
-            this.next = next;
-        }
-
-        @Override
-        public String toString() {
-            return "Value is: " + element + " | " + next;
-        }
+    public E get(int index) {
+        return (E) elements[index];
     }
 
-    private MyNode<E> topElement = null;
-    int size = 0;
-
-    public MyStack() {
-    }
-
-    public void push(E element) {
-        MyNode<E> myNewNode = new MyNode<>(element);
-        myNewNode.setNext(topElement);
-        topElement = myNewNode;
-        size++;
-    }
-
-    public E peek() {
-        if(isEmpty()) {
-            throw new EmptyStackException();
+    public void push(E e) {
+        if (size == elements.length) {
+            resize();
         }
-        return topElement.getElement();
+        this.elements[size] = e;
+        this.size++;
     }
 
-    public E pop() {
-        if(isEmpty()) {
-            throw new EmptyStackException();
+    private void resize() {
+        elements = Arrays.copyOf(elements, size * 3 / 2);
+    }
+
+    public E remove(int index) {
+        E value = (E) elements[index];
+        for (int i = index; i < size - 1; i++) {
+            elements[i] = elements[i + 1];
         }
-        MyNode <E> myNode = topElement.getNext();
-        size--;
-        return (E) myNode.getElement();
+        elements[size - 1] = null;
+        --size;
+        return value;
+    }
+
+    public void clear() {
+        elements = Arrays.copyOf(elements, 0);
+        size = 0;
     }
 
     public int size() {
         return size;
     }
 
-    public void clear() {
-        topElement = null;
-        size = 0;
+    public E peek() {
+        return elements[size - 1];
     }
 
-    public boolean isEmpty() {
-        return size == 0;
+    public E pop() {
+        return remove(size - 1);
     }
 
     @Override
     public String toString() {
-        return "" + topElement;
+        return Arrays.toString(Arrays.copyOf(elements, size));
     }
 }
